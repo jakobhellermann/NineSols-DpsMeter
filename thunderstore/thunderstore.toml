@@ -3,9 +3,9 @@ schemaVersion = "0.0.1"
 
 [package]
 namespace = "jakobhellermann"
-name = "DPS Meter"
+name = "DpsMeter"
 versionNumber = "0.1.0"
-description = "your mod description"
+description = "Damage Numbers and Statistics"
 websiteUrl = "https://github.com/jakobhellermann/NineSols-DpsMeter"
 containsNsfwContent = false
 

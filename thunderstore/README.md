@@ -1,4 +1,6 @@
-# Nine Sols Example Mod
+# DPS Meter
 
-Write a description of your mod here, it will be displayed on thunderstore.
-Remember to update the icon.png to something representing your mod.
+- damage popup numbers
+- timing information on inaccurate parry
+- stats panel with total damage and percentages
+- configurable keyboard shortcuts
