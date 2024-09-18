@@ -2,11 +2,11 @@
 schemaVersion = "0.0.1"
 
 [package]
-namespace = "yournamespace"
-name = "YourModName"
+namespace = "jakobhellermann"
+name = "DPS Meter"
 versionNumber = "0.1.0"
 description = "your mod description"
-websiteUrl = "link to the git repo"
+websiteUrl = "https://github.com/jakobhellermann/NineSols-DpsMeter"
 containsNsfwContent = false
 
 [package.dependencies]
