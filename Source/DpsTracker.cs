@@ -59,7 +59,7 @@ public class DpsTracker(ConfigEntry<DpsResetMode> resetMode) {
         }
 
         if (attackName is null) {
-            ToastManager.Toast(ObjectUtils.ObjectPath(data.dealer.gameObject));
+            Log.Warning(ObjectUtils.ObjectPath(data.dealer.gameObject));
             attackName = data.dealer.name;
         }
 
@@ -79,5 +79,6 @@ public class DpsTracker(ConfigEntry<DpsResetMode> resetMode) {
         { "NormalArrow Shoot 穿雲 Lv1(Clone)", "Bow" },
         { "NormalArrow Shoot 穿雲 Lv2(Clone)", "Bow" },
         { "NormalArrow Shoot 穿雲 Lv3(Clone)", "Bow" },
+        { "[Jade]AccurateParryReflect", "Hedgehog Jade" },
     };
 }
