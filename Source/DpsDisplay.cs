@@ -80,7 +80,8 @@ public class DpsDisplay(
             .OrderByDescending(x => x.groupSum)
             .Select(x => $"{x.type}: {x.groupSum:0.##} {x.percentage}%");
 
-        statsPanel.text = grouped.Join(delimiter: "\n");
+        var bySourceText = grouped.Join(delimiter: "\n");
+        statsPanel.text = $"Total: {totalDamage:0.##} 100%\n{bySourceText}";
 
         float duration;
         if (updateOnHits.Value) {
