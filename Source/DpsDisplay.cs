@@ -78,6 +78,7 @@ public class DpsDisplay(
                     return (type, groupSum, percentage);
                 })
             .OrderByDescending(x => x.groupSum)
+            .Where(x => x.groupSum > 0)
             .Select(x => $"{x.type}: {x.groupSum:0.##} {x.percentage}%");
 
         var bySourceText = grouped.Join(delimiter: "\n");

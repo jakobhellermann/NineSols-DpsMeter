@@ -121,9 +121,21 @@ public class DpsMeterMod : BaseUnityPlugin {
         if (statsPanel) Destroy(statsPanel.gameObject);
     }
 
-    public void OnDamage(EffectHitData hitData, float value, bool internalDamage) {
-        dpsTracker.OnDamage(hitData, value, internalDamage);
-        StartCoroutine(dpsDisplay.OnDamage(hitData, value, internalDamage));
+    public void OnDamage(
+        EffectHitData hitData,
+        Patches.CurrentHealth before,
+        Patches.CurrentHealth after
+    ) {
+        var healthDamage = before.HealthValue - after.HealthValue;
+
+        var onlyInternalDamage = after.InternalInjury - before.InternalInjury;
+        var onlyProccedDamage = before.TotalHealth - after.TotalHealth;
+
+        // if (healthDamage > 0) StartCoroutine(dpsDisplay.OnDamage(hitData, healthDamage, false));
+        if (onlyProccedDamage > 0) StartCoroutine(dpsDisplay.OnDamage(hitData, onlyProccedDamage, false));
+        if (onlyInternalDamage > 0) StartCoroutine(dpsDisplay.OnDamage(hitData, onlyInternalDamage, true));
+
+        dpsTracker.OnDamage(hitData, healthDamage);
     }
 
     public void OnInaccurateParry(EffectHitData hitData, float parryTime, float requiredParryTime, float spamLevel) {

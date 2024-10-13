@@ -36,7 +36,7 @@ public class DpsTracker(ConfigEntry<DpsResetMode> resetMode) {
         }
     }
 
-    public void OnDamage(EffectHitData data, float value, bool internalDamage) {
+    public void OnDamage(EffectHitData data, float value) {
         if (!Running) return;
 
         var owner = data.receiver.OwnerComponent.gameObject;
@@ -65,11 +65,6 @@ public class DpsTracker(ConfigEntry<DpsResetMode> resetMode) {
                 throw new ArgumentOutOfRangeException();
         }
 
-        var name = data.dealer.name;
-        if (name is "PostureDecrease" or "Posture Decrease") {
-            name = data.dealer.transform.parent.name;
-        }
-
         string? attackName = null;
         for (var dealer = data.dealer.transform; dealer; dealer = dealer.parent) {
             if (dealerNames.TryGetValue(dealer.name, out attackName)) {
@@ -78,7 +73,7 @@ public class DpsTracker(ConfigEntry<DpsResetMode> resetMode) {
         }
 
         if (attackName is null) {
-            Log.Warning(ObjectUtils.ObjectPath(data.dealer.gameObject));
+            Log.Warning("Unknown attack name: " + ObjectUtils.ObjectPath(data.dealer.gameObject));
             attackName = data.dealer.name;
         }
 
@@ -87,17 +82,22 @@ public class DpsTracker(ConfigEntry<DpsResetMode> resetMode) {
 
 
     private readonly Dictionary<string, string> dealerNames = new() {
+        // attack styles
         { "AttackFront", "Attack" },
         { "ChargedAttackFront", "Charge Attack" },
         { "Third Attack", "Heavy" },
-        { "Foo", "Foo Attach" },
-        { "FooExplode", "Foo" },
+        { "Foo", "Talisman Attach" },
+        { "FooExplode", "Talisman Explode" },
         { "JumpSpinKick", "Tai Chi" },
         { "[Dealer] Internal Damage", "UC" },
         { "--ReflectNode", "Reflect Projectile" },
+        // bow
         { "NormalArrow Shoot 穿雲 Lv1(Clone)", "Bow" },
         { "NormalArrow Shoot 穿雲 Lv2(Clone)", "Bow" },
         { "NormalArrow Shoot 穿雲 Lv3(Clone)", "Bow" },
+        { "rayCastDetector", "Bow Arrow" },
+        { "Explosion", "Bow Explosion" },
+        // jades
         { "[Jade]AccurateParryReflect", "Hedgehog Jade" },
     };
 }

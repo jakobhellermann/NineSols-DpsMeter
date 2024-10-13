@@ -3,6 +3,8 @@ using HarmonyLib;
 using InControl;
 using UnityEngine;
 
+// ReSharper disable InconsistentNaming
+
 namespace DpsMeter;
 
 [HarmonyPatch]
@@ -37,17 +39,37 @@ public class Patches {
         }
     }
 
+    public record struct CurrentHealth(float HealthValue, float InternalInjury) {
+        public float TotalHealth => HealthValue + InternalInjury;
+
+        internal static CurrentHealth From(PostureSystem health) {
+            return new CurrentHealth(health.CurrentHealthValue, health.CurrentInternalInjury);
+        }
+    }
 
     [HarmonyPatch(typeof(MonsterBase), nameof(MonsterBase.HittedByPlayerDecreasePosture))]
     [HarmonyPrefix]
-    public static void OnDamage(EffectHitData hitData) {
-        DpsMeterMod.Instance.OnDamage(hitData, hitData.dealer.FinalValue, false);
+    private static void OnDamagePrefix(MonsterBase __instance, out CurrentHealth __state) {
+        __state = CurrentHealth.From(__instance.postureSystem);
+    }
+
+    [HarmonyPatch(typeof(MonsterBase), nameof(MonsterBase.HittedByPlayerDecreasePosture))]
+    [HarmonyPostfix]
+    private static void OnDamage(MonsterBase __instance, CurrentHealth __state, EffectHitData hitData) {
+        var newHealth = CurrentHealth.From(__instance.postureSystem);
+        DpsMeterMod.Instance.OnDamage(hitData, __state, newHealth);
     }
 
     [HarmonyPatch(typeof(MonsterBase), nameof(MonsterBase.InternalInjuryVirtual))]
     [HarmonyPrefix]
-    public static void OnDamageInternal(EffectHitData data, float scale, float additionalDamage) {
-        var num = (float)(int)(data.dealer.FinalValue * scale + additionalDamage);
-        DpsMeterMod.Instance.OnDamage(data, num, true);
+    private static void OnDamageInternalPrefix(MonsterBase __instance, out CurrentHealth __state) {
+        __state = CurrentHealth.From(__instance.postureSystem);
+    }
+
+    [HarmonyPatch(typeof(MonsterBase), nameof(MonsterBase.InternalInjuryVirtual))]
+    [HarmonyPrefix]
+    private static void OnDamageInternal(MonsterBase __instance, CurrentHealth __state, EffectHitData data) {
+        var newHealth = CurrentHealth.From(__instance.postureSystem);
+        DpsMeterMod.Instance.OnDamage(data, __state, newHealth);
     }
 }
