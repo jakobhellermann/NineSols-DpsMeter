@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BepInEx.Configuration;
 using NineSolsAPI;
 using NineSolsAPI.Utils;
@@ -14,6 +15,8 @@ public class DpsTracker(ConfigEntry<DpsResetMode> resetMode) {
     public bool Running = true;
     public float RunningTime;
 
+    private GameObject? lockedInToOwner = null;
+
     public void Pause() {
         Running = !Running;
         ToastManager.Toast($"DPS tracking enabled: {Running}");
@@ -22,6 +25,7 @@ public class DpsTracker(ConfigEntry<DpsResetMode> resetMode) {
     public void Reset() {
         RecentHits.Clear();
         RunningTime = 0;
+        lockedInToOwner = null;
 
         ToastManager.Toast($"DPS tracking reset");
     }
@@ -37,13 +41,28 @@ public class DpsTracker(ConfigEntry<DpsResetMode> resetMode) {
 
         var owner = data.receiver.OwnerComponent.gameObject;
 
-        if (resetMode.Value == DpsResetMode.OnEnemyChange && RecentHits.Count > 0) {
-            var previousOwner = RecentHits.Last().Owner;
+        switch (resetMode.Value) {
+            case DpsResetMode.ManualResets:
+                break;
+            case DpsResetMode.ResetOnEnemyChange:
+                if (RecentHits.Count > 0) {
+                    var previousOwner = RecentHits.Last().Owner;
 
-            if (previousOwner != owner) {
-                RecentHits.Clear();
-                ToastManager.Toast("New enemy, resetting DPS stats");
-            }
+                    if (previousOwner != owner) {
+                        Reset();
+                        ToastManager.Toast("New enemy, resetting DPS stats");
+                    }
+                }
+
+                break;
+            case DpsResetMode.LockToFirstEnemy:
+                if (lockedInToOwner is null)
+                    lockedInToOwner = owner;
+                else if (owner != lockedInToOwner) return;
+
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
         var name = data.dealer.name;

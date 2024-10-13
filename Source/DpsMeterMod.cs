@@ -11,8 +11,9 @@ using UnityEngine.SceneManagement;
 namespace DpsMeter;
 
 public enum DpsResetMode {
-    OnEnemyChange,
-    Manual,
+    ManualResets,
+    ResetOnEnemyChange,
+    LockToFirstEnemy,
 }
 
 [BepInDependency(NineSolsAPICore.PluginGUID)]
@@ -42,7 +43,11 @@ public class DpsMeterMod : BaseUnityPlugin {
         RCGLifeCycle.DontDestroyForever(gameObject);
 
         try {
-            configResetMode = Config.Bind("General", "Reset Mode", DpsResetMode.OnEnemyChange);
+            configResetMode = Config.Bind("General", "Reset Mode", DpsResetMode.ResetOnEnemyChange,
+                "When to reset the DPS tracking.\n" +
+                "Manual Resets = You have to hit the reset shortcut manually\n" +
+                "Lock To First Enemy = After hitting an enemy, only damage to that enemy will be tracked (until manually reset)\n" +
+                "Reset On Enemy Change = Switching the enemy automatically resets the DPS tracking");
             configUpdateOnHits = Config.Bind("General", "Only update DPS on hits", true);
             configShowDamageNumbers = Config.Bind("General", "Show damage numbers", true);
 
