@@ -43,7 +43,7 @@ public class DpsMeterMod : BaseUnityPlugin {
 
         try {
             configResetMode = Config.Bind("General", "Reset Mode", DpsResetMode.OnEnemyChange);
-            configUpdateOnHits = Config.Bind("General", "Only update DPS on hits", false);
+            configUpdateOnHits = Config.Bind("General", "Only update DPS on hits", true);
             configShowDamageNumbers = Config.Bind("General", "Show damage numbers", true);
 
             /*configShortcutSpawnTrainingDummy = Config.Bind("Shortcuts",

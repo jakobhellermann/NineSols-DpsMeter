@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using BepInEx.Configuration;
 using HarmonyLib;
@@ -86,13 +84,13 @@ public class DpsDisplay(
 
         float duration;
         if (updateOnHits.Value) {
-            duration = tracker.RunningTime;
-        } else {
             if (recentHits.Count > 0) {
                 duration = recentHits.Last().Time - recentHits.First().Time;
             } else {
                 duration = 0;
             }
+        } else {
+            duration = tracker.RunningTime;
         }
 
         if (duration != 0) {
