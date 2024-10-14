@@ -48,14 +48,18 @@ public class DpsMeterMod : BaseUnityPlugin {
                 "Manual Resets = You have to hit the reset shortcut manually\n" +
                 "Lock To First Enemy = After hitting an enemy, only damage to that enemy will be tracked (until manually reset)\n" +
                 "Reset On Enemy Change = Switching the enemy automatically resets the DPS tracking");
-            configUpdateOnHits = Config.Bind("General", "Only update DPS on hits", true);
-            configShowDamageNumbers = Config.Bind("General", "Show damage numbers", true);
+            configUpdateOnHits = Config.Bind("General", "Only update DPS on hits", true,
+                "When enabled, the DPS value is only calculated on every hit. Otherwise, it will continously adapt as time goes on.");
+            configShowDamageNumbers = Config.Bind("General", "Show damage numbers", true,
+                "Show floating popup texts when you deal damage");
 
             /*configShortcutSpawnTrainingDummy = Config.Bind("Shortcuts",
                 "Spawn training dummy",
                 new KeyboardShortcut(KeyCode.T, KeyCode.LeftControl));*/
-            configShortcutPause = Config.Bind("Shortcuts", "Pause DPS Tracking", KeyboardShortcut.Empty);
-            configShortcutReset = Config.Bind("Shortcuts", "Reset DPS Tracking", KeyboardShortcut.Empty);
+            configShortcutPause = Config.Bind("Shortcuts", "Pause DPS Tracking", KeyboardShortcut.Empty,
+                "Temporarily disable DPS tracking");
+            configShortcutReset = Config.Bind("Shortcuts", "Reset DPS Tracking", KeyboardShortcut.Empty,
+                "Reset the DPS statistics. Also clears locked in enemy if reset mode is 'Lock To First Enemy'");
 
             statsPanel = CreateStatsPanel();
 
