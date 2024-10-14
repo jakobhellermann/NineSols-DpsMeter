@@ -84,8 +84,8 @@ public class DpsTracker(ConfigEntry<DpsResetMode> resetMode) {
     private readonly Dictionary<string, string> dealerNames = new() {
         // attack styles
         { "AttackFront", "Attack" },
+        { "Third Attack", "Third Attack" },
         { "ChargedAttackFront", "Charge Attack" },
-        { "Third Attack", "Heavy" },
         { "Foo", "Talisman Attach" },
         { "FooExplode", "Talisman Explode" },
         { "JumpSpinKick", "Tai Chi" },
@@ -96,7 +96,8 @@ public class DpsTracker(ConfigEntry<DpsResetMode> resetMode) {
         { "NormalArrow Shoot 穿雲 Lv2(Clone)", "Bow" },
         { "NormalArrow Shoot 穿雲 Lv3(Clone)", "Bow" },
         { "rayCastDetector", "Bow Arrow" },
-        { "Explosion", "Bow Explosion" },
+        { "Explosion Damage 爆破箭 閃電 lv2(Clone)", "Bow Explosion" },
+        { "[最新爆炸]Boom Explosion DamageEffect Sting 鐵蒺藜爆炸傷害(Clone)", "Jiequan Explosion" },
         // jades
         { "[Jade]AccurateParryReflect", "Hedgehog Jade" },
     };
