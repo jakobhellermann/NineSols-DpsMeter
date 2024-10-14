@@ -71,8 +71,6 @@ public class DpsMeterMod : BaseUnityPlugin {
             KeybindManager.Add(this, () => dpsTracker.Pause(), () => configShortcutPause.Value);
             KeybindManager.Add(this, () => dpsTracker.Reset(), () => configShortcutReset.Value);
 
-            KeybindManager.Add(this, () => GameCore.Instance?.ResetLevel(), KeyCode.T);
-
             /*dummy = LoadObjectFromResources(
                 "DpsMeter.preloads.bundle",
                 "Assets/SceneBundle/A0_S7_CaveReturned.unity",
