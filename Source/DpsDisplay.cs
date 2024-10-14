@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Configuration;
@@ -70,18 +71,28 @@ public class DpsDisplay(
         var sum = recentHits.Sum(hit => hit.Value);
 
         var totalDamage = recentHits.Sum(hit => hit.Value);
-        var grouped = recentHits.GroupBy(hit => hit.Type,
-                hit => hit.Value,
+        var grouped = recentHits.GroupBy(hit => hit.Type, hit => hit.Value,
                 (type, group) => {
                     var groupSum = group.Sum();
-                    var percentage = (int)(groupSum / totalDamage * 100);
-                    return (type, groupSum, percentage);
+                    var percentage = (groupSum / totalDamage * 100);
+                    var percentageFloored = (int)percentage;
+                    return (type, groupSum, percentage, percentageFloored);
                 })
-            .OrderByDescending(x => x.groupSum)
             .Where(x => x.groupSum > 0)
-            .Select(x => $"{x.type}: {x.groupSum:0.##} {x.percentage}%");
+            .ToList();
 
-        var bySourceText = grouped.Join(delimiter: "\n");
+        var floorSumMissing = 100 - grouped.Sum(x => x.percentageFloored);
+        var indices = grouped.Select((x, index) => (index, fract: x.percentage - x.percentageFloored))
+            .OrderByDescending(x => x.Item2)
+            .Take(floorSumMissing);
+        foreach (var (index, _) in indices) {
+            grouped[index] = grouped[index] with { percentageFloored = grouped[index].percentageFloored + 1 };
+        }
+
+        var bySourceText = grouped
+            .OrderByDescending(x => x.groupSum)
+            .Select(x => $"{x.type}: {x.groupSum:0.##} {x.percentage} {x.percentageFloored}%")
+            .Join(delimiter: "\n");
         statsPanel.text = $"Total: {totalDamage:0.##} 100%\n{bySourceText}";
 
         float duration;
