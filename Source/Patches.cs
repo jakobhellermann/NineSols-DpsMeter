@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HarmonyLib;
 using InControl;
+using NineSolsAPI;
 using UnityEngine;
 
 // ReSharper disable InconsistentNaming
@@ -39,11 +41,24 @@ public class Patches {
         }
     }
 
-    public record struct CurrentHealth(float HealthValue, float InternalInjury) {
+    public record struct CurrentHealth(
+        float HealthValue,
+        float InternalInjury,
+        bool wasLockPostureInvincible
+    ) {
         public float TotalHealth => HealthValue + InternalInjury;
 
         internal static CurrentHealth From(PostureSystem health) {
-            return new CurrentHealth(health.CurrentHealthValue, health.CurrentInternalInjury);
+            return new CurrentHealth(health.CurrentHealthValue, health.CurrentInternalInjury,
+                health.BindMonster.monsterStat.IsLockPostureInvincible);
+        }
+
+        internal void Restore(PostureSystem health) {
+            if (wasLockPostureInvincible) {
+                health.PostureValue = health.MaxPostureValue;
+                health.CurrentInternalInjury = 0;
+                health.BindMonster.monsterStat.IsLockPostureInvincible = true;
+            }
         }
     }
 
@@ -51,12 +66,18 @@ public class Patches {
     [HarmonyPrefix]
     private static void OnDamagePrefix(MonsterBase __instance, out CurrentHealth __state) {
         __state = CurrentHealth.From(__instance.postureSystem);
+
+        if (__instance.monsterStat.IsLockPostureInvincible) {
+            __instance.monsterStat.IsLockPostureInvincible = false;
+        }
     }
 
     [HarmonyPatch(typeof(MonsterBase), nameof(MonsterBase.HittedByPlayerDecreasePosture))]
     [HarmonyPostfix]
     private static void OnDamage(MonsterBase __instance, CurrentHealth __state, EffectHitData hitData) {
         var newHealth = CurrentHealth.From(__instance.postureSystem);
+        __state.Restore(__instance.postureSystem);
+
         DpsMeterMod.Instance.OnDamage(hitData, __state, newHealth);
     }
 
@@ -70,6 +91,7 @@ public class Patches {
     [HarmonyPrefix]
     private static void OnDamageInternal(MonsterBase __instance, CurrentHealth __state, EffectHitData data) {
         var newHealth = CurrentHealth.From(__instance.postureSystem);
+        __state.Restore(__instance.postureSystem);
         DpsMeterMod.Instance.OnDamage(data, __state, newHealth);
     }
 }
