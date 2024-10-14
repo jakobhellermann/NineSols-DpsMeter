@@ -4,7 +4,7 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "jakobhellermann"
 name = "DpsMeter"
-versionNumber = "0.2.0"
+versionNumber = "0.2.1"
 description = "Damage Numbers and Statistics"
 websiteUrl = "https://github.com/jakobhellermann/NineSols-DpsMeter"
 containsNsfwContent = false

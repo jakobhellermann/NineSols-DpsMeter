@@ -135,6 +135,10 @@ public class DpsMeterMod : BaseUnityPlugin {
         var onlyInternalDamage = after.InternalInjury - before.InternalInjury;
         var onlyProccedDamage = before.TotalHealth - after.TotalHealth;
 
+        Log.Info($"Health Before: {before}");
+        Log.Info($"Health After: {after}");
+        Log.Info($"Damage: base {healthDamage} / internal {onlyInternalDamage} / procced {onlyProccedDamage}");
+
         // if (healthDamage > 0) StartCoroutine(dpsDisplay.OnDamage(hitData, healthDamage, false));
         if (onlyProccedDamage > 0) StartCoroutine(dpsDisplay.OnDamage(hitData, onlyProccedDamage, false));
         if (onlyInternalDamage > 0) StartCoroutine(dpsDisplay.OnDamage(hitData, onlyInternalDamage, true));
