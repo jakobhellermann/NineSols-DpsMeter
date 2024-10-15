@@ -91,7 +91,7 @@ public class DpsDisplay(
 
         var bySourceText = grouped
             .OrderByDescending(x => x.groupSum)
-            .Select(x => $"{x.type}: {x.groupSum:0.##} {x.percentage} {x.percentageFloored}%")
+            .Select(x => $"{x.type}: {x.groupSum:0.##} {x.percentageFloored}%")
             .Join(delimiter: "\n");
         statsPanel.text = $"Total: {totalDamage:0.##} 100%\n{bySourceText}";
 
